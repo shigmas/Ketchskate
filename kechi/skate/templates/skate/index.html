@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en" ng-app="SkateApp">
+<meta name="viewport" content="width=device-width">
+{% load staticfiles %}
+<head>
+  <meta charset="utf-8">
+  <title>Skate</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.min.js"></script>
+
+  <script src="{% static "skate/js/app.js" %}"></script>
+  <script src="{% static "skate/js/js.cookie.js" %}"></script>
+  <script src="{% static "skate/js/controllers.js" %}"></script>
+</head>
+
+<body>
+{% if user.is_authenticated %}
+<P>
+  Welcome,
+  {{ user.username }}
+</P>
+<P>
+  <a href="/skate/logout/">Logout</a>
+</P>
+{% else %}
+  <a href="/skate/login.html">Login</a>
+  <a href="/skate/create.html">Create</a>
+</P>
+<P>
+{% endif %}
+
+<div ng-view></div>
+</body>
+</html>

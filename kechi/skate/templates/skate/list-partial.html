@@ -1,0 +1,31 @@
+{% verbatim %}
+<!-- Put the ng-repeat in the table so it's in the scope for the tr/td's -->
+<table ng-repeat="item in ctrlr.product_list">
+  <tr>
+    <td>Edit</td><td>Product</td><td>url</td>
+  </tr>
+  <tr>
+    <td> <input type="checkbox" ng-model="item.isChecked" ng-true-value="'YES'" ng-false-value="'NO'" >
+    <td>
+    {{ item.identifier }}
+    </td>
+    <td>
+      {{ item.urlPath }}
+    </td>
+  </tr>
+</table>
+<button id="deleteProducts" class="btn btn-primary" type="button" 
+        ng-click="ctrlr.deleteProducts()">Delete selected product(s)</button>
+
+<H2>Add new product</H2>
+<div>
+  Your identifier: <input ng-model="ctrlr.product.identifier" type="text">
+</div>
+<div>
+  Product URL: <input ng-model="ctrlr.product.url" type="text">
+</div>
+<div><font color='red'>{{ctrlr.errorMessage}}</font></div>
+<button id="addProduct" class="btn btn-primary" type="button" 
+        ng-click="ctrlr.addNewProduct()">Add To Watch List</button>
+
+{% endverbatim %}
