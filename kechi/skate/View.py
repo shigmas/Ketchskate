@@ -145,6 +145,10 @@ class ItemView(BaseView):
                         if field.name == 'id':
                             itemId = getattr(i, field.name)
                         # Test if a relationship. If so, don't add it.
+                        if field.name == 'urlPath':
+                            store = getattr(i, 'store')
+                            urlPath = getattr(i, field.name)
+                            iDict['url'] = 'http://%s/%s' % (store.host, urlPath)
                         if field.rel is None:
                             iDict[field.name] = getattr(i, field.name)
                     if itemId is not None:

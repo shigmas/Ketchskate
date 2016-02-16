@@ -2,15 +2,12 @@
 <!-- Put the ng-repeat in the table so it's in the scope for the tr/td's -->
 <table ng-repeat="item in ctrlr.product_list">
   <tr>
-    <td>Edit</td><td>Product</td><td>url</td>
+    <td>Edit</td><td>Product</td>
   </tr>
   <tr>
     <td> <input type="checkbox" ng-model="item.isChecked" ng-true-value="'YES'" ng-false-value="'NO'" >
     <td>
-    {{ item.identifier }}
-    </td>
-    <td>
-      {{ item.urlPath }}
+      <A HREF="{{ item.url }}">{{ item.identifier }}</A>
     </td>
   </tr>
 </table>
