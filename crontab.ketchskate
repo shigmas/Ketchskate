@@ -1,0 +1,3 @@
+# Run 5 minutes after midnight, every day
+#5 0 * * *	$HOME/src/projects/Kechskate/bin/python3 $HOME/src/projects/Kechskate/kechi/manage.py find_sales 2>&1 $HOME/cheapskate.out
+4 12 * * *	$HOME/src/projects/Kechskate/bin/python3 $HOME/src/projects/Kechskate/kechi/manage.py find_sales > $HOME/cheapskate.out
