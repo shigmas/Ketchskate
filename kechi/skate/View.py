@@ -98,7 +98,7 @@ class ItemView(BaseView):
 
     def _getStoreFromHost(self, sentUrlHost):
         if sentUrlHost.startswith('m.'):
-            host = sentUrlHost.replace('m.','')
+            host = sentUrlHost.replace('m.','',1)
         else:
             host = sentUrlHost
         print('looking for host: %s' % host)
