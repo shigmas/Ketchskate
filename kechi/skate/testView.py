@@ -73,7 +73,7 @@ class ItemViewTests(UserViewTests):
     fixtures = ['shows.json']
 
     bloomProd0 = ('http://www1.bloomingdales.com/shop/product/andrew-marc-gayle-luxe-down-fur-trim-hooded-coat?ID=1402983&CategoryID=19718','fur coat',None)
-    bloomProd1 = ('http://www1.bloomingdales.com/shop/product/gucci-black-mirror-sunglasses?ID=1538465&CategoryID=1004011','Gucci sunglasses',None)
+    bloomProd1 = ('http://m.bloomingdales.com/shop/product/gucci-black-mirror-sunglasses?ID=1538465&CategoryID=1004011','Gucci sunglasses',None)
 
     nonStore0 = ('http://www.lululemon/this/does/not/matter.html','fur coat',None)
 
@@ -125,6 +125,22 @@ class ItemViewTests(UserViewTests):
             if message:
                 self.assertEquals(contents['message'], message)
 
+    def _deleteItems(self, itemIds, expectSuccess=True, message=None):
+        data = {'product_ids':itemIds,
+        }
+
+        jsonData = json.dumps(data)
+        url = _createV1Url('delete_multiple_items')
+        response = self.client.post(url, jsonData,
+                                    content_type='application/json')
+        contents = json.loads(str(response.content, encoding='utf-8'))
+        if expectSuccess:
+            self.assertEquals(contents['result'],True)
+        else:
+            self.assertEquals(contents['result'],False)
+            if message:
+                self.assertEquals(contents['message'], message)
+
     def testCreateItem(self):
         self._createItem(self.bloomProd0, False, 'User is not logged in')
         self._createUser(self.user,self.password,self.email, expectSuccess=True)
@@ -145,10 +161,10 @@ class ItemViewTests(UserViewTests):
         self._createItem(self.bloomProd1)
         items = self._getItems()
         self.assertEquals(len(items),2,'Unexpected number of items')
-
+        print('got items: %s' % items.keys())
         for itemId in items.keys():
             self._deleteItem(itemId)
-        
+
         # This is a temporary database, but this is good practice
         self._deleteUser(True)
         

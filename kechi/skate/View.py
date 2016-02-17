@@ -90,26 +90,33 @@ class ItemView(BaseView):
             else:
                 content['message'] = result
             content['result'] = success
-            print('returning %s' % content)
             return JsonResponse(content, safe=True)
         else:
             # return HTTP content (which is just to redirect to home, in this
             # case
             return HttpResponseRedirect('/skate/')
 
+    def _getStoreFromHost(self, sentUrlHost):
+        if sentUrlHost.startswith('m.'):
+            host = sentUrlHost.replace('m.','')
+        else:
+            host = sentUrlHost
+        print('looking for host: %s' % host)
+        return Store.objects.filter(host__contains=host)
+
     def _addItem(self, content):
-        print('_addItem!')
         if not self.request.user.is_authenticated():
             return 'User is not logged in', False
 
         productUrl = content.get('product_url',None)
         productId = content.get('product_identifier',None)
         productLimitPrice = content.get('product_limit_price',None)
-        print('params: %s, %s, %s' % (productUrl, productId, productLimitPrice))
         urlPieces = urlparse(productUrl)
         if productUrl is not None and productId is not None and \
            (urlPieces.scheme == 'http' or urlPieces.scheme == 'https'):
-            store = Store.objects.filter(host=urlPieces.netloc)
+            # The URL may have been sent to us with 'm.<domain>', but we'll
+            # save it with the canonical hostname
+            store = self._getStoreFromHost(urlPieces.netloc)
             if len(store) == 1:
                 # Looks like we have enough information to get/create the item
                 item = Item(identifier = productId,
@@ -166,17 +173,21 @@ class ItemView(BaseView):
             print('getting item with id %s type: %s' % (itemId, type(itemId)))
             items = Item.objects.filter(pk= itemId, creator=self.request.user)
             # items should only be one.
-            if len(items) != 1:
-                error = 'No item %s for user %s' % (itemId, self.request.user)
-            else:
+            print('deleting items %s, count: %s' % (items, len(items)))
+            if len(items) == 1:
                 items[0].delete()
+            else:
+                error = 'No item %s for user %s' % (itemId, self.request.user)
         else:
             error = 'not logged in'
 
         if error:
-            return error, True
-        else:
+            print('returning true')
             return error, False
+        else:
+            print('returning false')
+            return error, True
+
 
     def _deleteItems(self, content):
         error = None
@@ -196,9 +207,9 @@ class ItemView(BaseView):
             error = 'not logged in'
 
         if error:
-            return error, True
-        else:
             return error, False
+        else:
+            return error, True
 
 class UserView(BaseView):
     
