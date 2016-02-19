@@ -6,7 +6,6 @@ from django.test import TestCase
 
 from django.contrib.auth.models import User
 
-from django.utils import timezone
 import datetime
 
 import time
@@ -70,7 +69,7 @@ class UserViewTests(TestCase):
         self._deleteUser(False)
 
 class ItemViewTests(UserViewTests):
-    fixtures = ['shows.json']
+    fixtures = ['stores.json']
 
     bloomProd0 = ('http://www1.bloomingdales.com/shop/product/andrew-marc-gayle-luxe-down-fur-trim-hooded-coat?ID=1402983&CategoryID=19718','fur coat',None)
     bloomProd1 = ('http://m.bloomingdales.com/shop/product/gucci-black-mirror-sunglasses?ID=1538465&CategoryID=1004011','Gucci sunglasses',None)

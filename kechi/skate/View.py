@@ -11,6 +11,7 @@ from django.db.models import Avg
 from django.shortcuts import render
 
 import datetime
+from django.utils import timezone
 
 import string
 import inspect
@@ -18,6 +19,8 @@ import types
 
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
+
+from skate import ImageParsers
 
 from urllib.parse import urlparse
 
@@ -118,11 +121,18 @@ class ItemView(BaseView):
             # save it with the canonical hostname
             store = self._getStoreFromHost(urlPieces.netloc)
             if len(store) == 1:
+                parser = ImageParsers.GetParser(store[0].name)
+                urlPath = '%s?%s' % (urlPieces.path, urlPieces.query)
+                parser.setPath(urlPath)
+                parser.parse()
+                print('found image: %s' % parser.mainImage)
                 # Looks like we have enough information to get/create the item
                 item = Item(identifier = productId,
-                            urlPath = '%s?%s' % (urlPieces.path, urlPieces.query),
-                            createTime = datetime.datetime.now(),
+                            createTime = timezone.now(),
                             creator = self.request.user,
+                            urlPath = urlPath,
+                            mainImageUrl = parser.mainImage,
+                            altImageUrl = parser.altImage,
                             store = store[0],
                             sku = '000000')
                 if productLimitPrice is not None:
@@ -130,6 +140,7 @@ class ItemView(BaseView):
                 item.save()
                 return None, True
             else:
+                print('no store for %s' % urlPieces.netloc)
                 return 'no store for url', False
 
         return 'not enough information to create item', False
