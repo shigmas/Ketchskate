@@ -68,6 +68,26 @@ class UserViewTests(TestCase):
         # we already tested successful delete, so just test fail
         self._deleteUser(False)
 
+class StoreViewTests(UserViewTests):
+    fixtures = ['stores.json']
+
+    def _getStores(self, expectSuccess=True, message=None):
+        url = _createV1Url('get_stores')
+        response = self.client.post(url, json.dumps({}),
+                                    content_type='application/json')
+        contents = json.loads(str(response.content, encoding='utf-8'))
+        if expectSuccess:
+            self.assertEquals(contents['result'],True)
+            return contents['stores']
+        else:
+            self.assertEquals(contents['result'],False)
+            if message:
+                self.assertEquals(contents['message'], message)
+            return None
+
+    def testGetStores(self):
+        self._getStores()
+
 class ItemViewTests(UserViewTests):
     fixtures = ['stores.json']
 

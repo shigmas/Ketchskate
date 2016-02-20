@@ -68,6 +68,60 @@ class HomeView(BaseView):
         content = {}
         return render(self.request,'skate/index.html',content)
 
+class StoreView(BaseView):
+
+    def _handleCommand(self):
+        content, error = self._getContent(self.request)
+
+        commandDict = {'get_stores': self._getStores,
+        }
+
+        action = commandDict.get(self.command, None)
+        if action is None:
+            print('no command for %s' % self.command)
+            return JsonResponse({}, safe=True)
+
+        result, success = action(content)
+        if self.version == 'v1':
+            # return JSON result
+            content = {}
+            if success:
+                if type(result) == type({}):
+                    content = result
+            else:
+                content['message'] = result
+            content['result'] = success
+            return JsonResponse(content, safe=True)
+        else:
+            # return HTTP content (which is just to redirect to home, in this
+            # case
+            return HttpResponseRedirect('/skate/')
+
+    def _getStores(self, content):
+
+        stores = Store.objects.all()
+        if self.version == 'v1':
+            # for JSON, we convert the object to a python dictionary
+            storesDict = None
+            if stores:
+                storesDict = {}
+                for i in stores:
+                    iDict = {}
+                    fields = i._meta.concrete_fields
+                    storeId = None
+                    for field in fields:
+                        if field.name == 'id':
+                            storeId = getattr(i, field.name)
+                        iDict[field.name] = getattr(i, field.name)
+                    if storeId is not None:
+                        storesDict[storeId] = iDict
+            content['stores'] = storesDict
+        else:
+            # For a template to process
+            content['stores'] = stores
+
+        return content, True
+
 class ItemView(BaseView):
 
     def _handleCommand(self):

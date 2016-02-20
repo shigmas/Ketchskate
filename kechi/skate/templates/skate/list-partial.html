@@ -27,5 +27,15 @@
 <div><font color='red'>{{ctrlr.errorMessage}}</font></div>
 <button id="addProduct" class="btn btn-primary" type="button" 
         ng-click="ctrlr.addNewProduct()">Add To Watch List</button>
-
+<div><font color='red'>{{ ctrlr.errorMessage }}</font></div>
+<div>
+  Supported stores:
+</div>
+<div>
+  <table>
+    <tr ng-repeat="store in ctrlr.stores">
+      <td>{{ store.name }}</td>
+    </tr>
+  </table>
+</div>
 {% endverbatim %}

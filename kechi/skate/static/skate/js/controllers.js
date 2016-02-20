@@ -26,6 +26,21 @@ SkateModule.factory('SkateService', function($http) {
     }
     svc.getList = _getList
 
+    svc.getStores = function(ctrlr) {
+        _setHeader()
+        $http.post('/skate/v1/get_stores/', {}).
+                   // New style
+            then(function(data, status, headers, config) { 
+                // after we login, set the header again for a new csrf token
+                ctrlr.stores = data['data']['stores']
+                console.log('fetched stores: ',
+                            Object.keys(ctrlr.stores).length)
+            },function(data, status, headers, config) { 
+                // after we login, set the header again for a new csrf token
+                $scope.errorMessage = 'error'
+            });
+    }
+
     svc.saveProduct = function(ctrlr, prodIdentifier, prodUrl) {
         _setHeader()
         $http.post('/skate/v1/add_item/',
@@ -79,6 +94,7 @@ SkateModule.controller('SkateListCtrlr', ['SkateService',
         var self = this
         /* Get this called to populate the product list */
         SkateService.getList(self)
+        SkateService.getStores(self)
 
         this.addNewProduct = function() {
             console.log('adding')
