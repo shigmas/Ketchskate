@@ -102,8 +102,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-EMAIL_HOST = 'ramnode.futomen.net'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'mailbot'
-EMAIL_HOST_PASSWORD = 'b0tbulk'
-#EMAIL_USE_SSL = True
+try:
+    from kechi.machine_conf import *
+except ImportError as ie:
+    print('No machine settings. Failing: %s' % ie)

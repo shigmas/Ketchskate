@@ -35,10 +35,8 @@ class Command(BaseCommand):
                 print('no parser for %s' % store.name)
                 continue
 
-            print('parsing %s' % store.name) 
             items = Item.objects.filter(store=store)
             for item in items:
-                print('item.path: %s' % item.urlPath)
                 parser.setPath(item.urlPath)
                 parser.parse()
                 if parser.salePrice and (parser.salePrice != parser.regularPrice):

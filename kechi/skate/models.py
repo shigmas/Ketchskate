@@ -30,7 +30,11 @@ class Item(models.Model):
     # notifications turned on, we will continue to send the notifications, even
     # if this is set
     notificationDate = models.DateTimeField(null=True)
-    
+
+    def __str__(self):
+        return '%s (%s)' % (self.identifier, self.store.name)
+
+
 class CommPreferences(models.Model):
     user = models.OneToOneField(User)
     # If this goes over the max... well, there's a bug somewhere
