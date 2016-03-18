@@ -7,12 +7,14 @@ import skate.View
 
 urlpatterns = patterns('',
                        url(r'^$', skate.View.HomeView.as_view()),
-                       url(r'^login.html$',
-                           skate.View.PageView.as_view(template='login.html')),
-                       url(r'^create.html$',
-                           skate.View.PageView.as_view(template='create.html')),
-                       url(r'^list-partial.html$',
-                           skate.View.PageView.as_view(template='list-partial.html')),
+                       # Our pass-through template. For standard pages, we just
+                       # return an 'almost' static page
+                       url(r'.html$',
+                           skate.View.PageView.as_view()),
+
+                       url(r'^start/$',
+                           skate.View.StartView.as_view(command='start')),
+
                        url(r'^login/$',
                            skate.View.UserView.as_view(command='login')),
                        url(r'^create/$',

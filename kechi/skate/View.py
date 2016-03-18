@@ -25,6 +25,7 @@ from skate import ImageParsers
 from urllib.parse import urlparse
 
 import os
+import os.path
 import json
 
 from skate.models import *
@@ -54,13 +55,25 @@ class BaseView(View):
 
         return content, error
     
-    
+# For pure JSON clients (mobile devices), we provide this URL, which just sets
+# the CSRF token
+class StartView(BaseView):    
+    @method_decorator(ensure_csrf_cookie)
+    def dispatch(self, *args, **kwargs):
+        return super(StartView, self).dispatch(*args, **kwargs)
+
+    def _handleCommand(self):
+        return JsonResponse({"success":True}, safe=True)
+
 # Just loads template pages. almost statically
 class PageView(BaseView):
     template = None
 
+    def _getHtmlPage(self):
+        return os.path.basename(self.request.path)
+
     def _handleCommand(self):
-        page = 'skate/' + self.template
+        page = 'skate/' + self._getHtmlPage()
         return render(self.request,page,{})
 
 class HomeView(BaseView):
